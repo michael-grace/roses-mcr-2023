@@ -1,0 +1,35 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="container">
+    <span>You're listening to...</span>
+    <header id="stream-available">
+        <div id="show-title">
+            <h1>
+                Roses 2023
+            </h1>
+            <h2>
+                {% if stream.id == 'Broadcast' %} URY Main Stream {% endif %}
+            </h2>
+            <h3>
+                {{stream.event}}
+            </h3>
+        </div>
+        <div id="show-image">
+            <img src="/static/custom/logo-2021.png" alt="((URY)) Roses Logo">
+        </div>
+        <div id="show-player">
+            <a href="/">All Streams</a>
+        </div>
+        <div id="show-player" class="row">
+            <div id="show-player-play" class="fa fa-play col-2"></div>
+            <div id="show-player-text" class="col">LOADING STREAM</div>
+            <audio id="player-element">
+          <source src="{{stream.audio_url}}" type="audio/mp3">
+            Your browser does not support our audio stream.
+        </audio>
+        </div>
+    </header>
+</div>
+<script src="/static/player.js"></script>
+
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="container">
+    <h3><small>Choose your coverage...</small></h3>
+    <header id="stream-available">
+        <div id="show-title">
+            <h1>
+                ((URY)) Roses 2023
+            </h1>
+            <h3><span class="btn btn-red btn-live">LIVE</span> Right Now</h3>
+        </div>
+        {% for stream in streams %} {% if stream.live %}
+        <a href="/stream/{{stream.id}}">
+            <div class="stream-list-row row">
+                <div id="show-player-text" class="col">
+                    {% if stream.id == 'Broadcast' %}Main Stream{% else %}{% endif %}<span>{{stream.event}}</span></div>
+            </div>
+        </a>
+        {% endif %} {% endfor %}
+        <div id="show-image">
+            <img src="static/custom/logo-2021.png" alt="((URY)) Roses 2023 Logo">
+        </div>
+    </header>
+</div>
+
+{% endblock %}

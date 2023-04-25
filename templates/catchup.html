@@ -1,0 +1,32 @@
+{% extends 'base.html' %} {% block content %}
+
+<div class="container">
+    <span>You're listening to...</span>
+    <header id="stream-available">
+        <div id="show-title">
+            <h1>
+                Roses 2023
+            </h1>
+            <h3>
+                {{name}}
+            </h3>
+        </div>
+        <div id="show-image">
+            <img src="/static/custom/logo-23.png" alt="((URY)) Roses Logo">
+        </div>
+        <div id="show-player">
+            <a href="/">All Streams</a>
+        </div>
+        <div id="catchup" class="row">
+            <!-- <div id="show-player-play" class="fa fa-play col-2"></div> -->
+            <!-- <div id="show-player-text" class="col">LOADING PLAYER</div> -->
+            <audio controls id="catchup-player">
+          <source src="https://stream-recorder.ury.org.uk/recordings/{{id}}.mp3" type="audio/mp3">
+            Your browser does not support our audio stream.
+        </audio>
+        </div>
+    </header>
+</div>
+<script src="/static/player.js"></script>
+
+{% endblock %}

@@ -3,6 +3,8 @@ import json
 import pathlib
 import time
 
+import requests
+
 from flask import Flask, render_template, abort
 
 app = Flask(__name__)
@@ -26,7 +28,18 @@ def listen_page(stream_id):
     except IndexError:
         abort(404)
 
-
+@app.route("/catchup/<catchup_id>")
+def catchup_page(catchup_id):
+    recordings = requests.get("https://stream-recorder.ury.org.uk/recordings-json").json()
+    name = ""
+    for recording in recordings:
+        if recording["ID"] == catchup_id:
+            name = recording["Name"]
+            break
+    if name != "":
+        return render_template("catchup.html", id=catchup_id, name=name)
+    else:
+        abort(404)
 
 @app.route("/mcr")
 def mcr():

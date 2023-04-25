@@ -74,7 +74,7 @@ def change_to_catchup(id: str, title: str, catchup_url: str):
 
 def request_log(stream_endpoint: str, start_time, end_time, name) -> str:
     return requests.post(config.LOG_REQUEST_URL, json = {
-        "name": f"Full Stream - {name}",
+        "name": f"{name} - Full Commentary",
         "startTime": start_time.astimezone().isoformat(),
         "endTime": end_time.astimezone().isoformat(),
         "stream": stream_endpoint

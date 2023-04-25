@@ -1,3 +1,4 @@
+import datetime
 import json
 import time
 import urllib.error
@@ -5,6 +6,7 @@ import urllib.error
 import pandas as pd
 
 import config
+import roseslive
 
 previous_data = {}
 
@@ -32,18 +34,42 @@ while True:
     # process any changes
     changes = False
     for k, v in current_data.items():
-        if previous_data == {} or v["event"] != previous_data["event"] or v["live"] != previous_data["live"]:
+        current_data[k]["roseslive_id"] = previous_data[k].get("roseslive_id")
+        current_data[k]["start_time"] = previous_data[k].get("start_time")
+
+        if previous_data == {} or v["event"] != previous_data[k]["event"] or v["live"] != previous_data[k]["live"]:
             changes = True
 
             # RosesLive API request
+            if k == "broadcast":
+                continue
+
+            if previous_data[k]["live"] and not v["live"]:
+                # deal with catchup
+                # check the times are reasonable
+                # TODO
+
+                # request from the logger
+                log_id = roseslive.request_log(k, datetime.datetime.fromisoformat(v["startTime"]), datetime.datetime.fromisoformat(v["endTime"]), v["event"])
+                
+                # upload it
+                roseslive.change_to_catchup(current_data[k]["roseslive_id"], f"Catch Up: {v['event']}", f"https://roses.ury.org.uk/catchup/{log_id}") 
+
+                continue
+
+            if not previous_data[k]["live"] and v["live"]:
+                # publish it
+                roseslive_id = roseslive.publish(f"{v['event']} Commentary", v["player_url"], False)
+
+                # save the id and stream start time
+                current_data[k]["roseslive_id"] = roseslive_id
+                current_data[k]["start_time"] = datetime.datetime.now().astimezone().isoformat()
+                continue
+
+            # otherwise, stop the old one, make it catchup and start a new one
+            # TODO
+            
             ...
-    
-    try:
-        if current_data["broadcast"]["event"] != previous_data["broadcast"]["event"]:
-            # BFM Radiotext
-            ...
-    except KeyError:
-        pass
 
     # save it
     if changes:

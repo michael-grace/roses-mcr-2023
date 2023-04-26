@@ -52,14 +52,14 @@ while True:
                 # deal with catchup
                 # check the times are reasonable
                 # TODO
-                if v.get("startTime") is None:
+                if previous_data[k].get("start_time") is None:
                     continue
 
                 # request from the logger
-                log_id = roseslive.request_log(k, datetime.datetime.fromisoformat(v["startTime"]), datetime.datetime.fromisoformat(v["endTime"]), v["event"])
+                log_id = roseslive.request_log(k, datetime.datetime.fromisoformat(previous_data[k]["start_time"]), datetime.datetime.now(), v["event"])
                 
                 # upload it
-                roseslive.change_to_catchup(current_data[k]["roseslive_id"], f"Catch Up: {v['event']}", f"https://roses.ury.org.uk/catchup/{log_id}") 
+                roseslive.change_to_catchup(previous_data[k]["roseslive_id"], f"Catch Up: {v['event']}", f"https://roses.ury.org.uk/catchup/{log_id}") 
 
                 continue
 
@@ -74,13 +74,17 @@ while True:
 
             # otherwise, stop the old one, make it catchup and start a new one
 
-            if v.get("startTime") is None:
-                    continue
+            if previous_data[k].get("start_time") is None:
+                continue
 
             # request from the logger
-            log_id = roseslive.request_log(k, datetime.datetime.fromisoformat(v["startTime"]), datetime.datetime.fromisoformat(v["endTime"]), v["event"])
+            log_id = roseslive.request_log(k, datetime.datetime.fromisoformat(previous_data[k]["start_time"]), datetime.datetime.now(), v["event"])
             
             # upload it
+            roseslive.change_to_catchup(previous_data[k]["roseslive_id"], f"Catch Up: {v['event']}", f"https://roses.ury.org.uk/catchup/{log_id}") 
+
+
+            # publish new stream
             roseslive_id = roseslive.publish(f"{v['event']} Commentary", v["player_url"], False)
 
             # save the id and stream start time

@@ -5,6 +5,7 @@ WORKDIR /app
 COPY . .
 
 RUN pip3 install -r requirements.txt
+RUN echo "{}" > data.json
 
 EXPOSE 5000
 

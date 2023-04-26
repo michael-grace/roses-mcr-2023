@@ -31,6 +31,10 @@ while True:
             "event": row.iloc[2] if row.iloc[3] == "Live" else "Coming Up: " + row.iloc[2]
         }
     
+    if previous_data == {}:
+        previous_data = current_data
+
+
     # process any changes
     changes = False
     for k, v in current_data.items():
@@ -48,6 +52,8 @@ while True:
                 # deal with catchup
                 # check the times are reasonable
                 # TODO
+                if v.get("startTime") is None:
+                    continue
 
                 # request from the logger
                 log_id = roseslive.request_log(k, datetime.datetime.fromisoformat(v["startTime"]), datetime.datetime.fromisoformat(v["endTime"]), v["event"])
@@ -67,9 +73,21 @@ while True:
                 continue
 
             # otherwise, stop the old one, make it catchup and start a new one
-            # TODO
+
+            if v.get("startTime") is None:
+                    continue
+
+            # request from the logger
+            log_id = roseslive.request_log(k, datetime.datetime.fromisoformat(v["startTime"]), datetime.datetime.fromisoformat(v["endTime"]), v["event"])
             
-            ...
+            # upload it
+            roseslive_id = roseslive.publish(f"{v['event']} Commentary", v["player_url"], False)
+
+            # save the id and stream start time
+            current_data[k]["roseslive_id"] = roseslive_id
+            current_data[k]["start_time"] = datetime.datetime.now().astimezone().isoformat()
+
+            # goodness, this is all so dodgy
 
     # save it
     if changes:
@@ -84,4 +102,5 @@ while True:
     # print(df.iloc[:,9])
 
     # repeat
+    previous_data = current_data
     time.sleep(30)

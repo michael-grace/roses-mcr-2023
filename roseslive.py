@@ -15,36 +15,42 @@ transport = AIOHTTPTransport(
 client = Client(transport=transport, fetch_schema_from_transport=True)
 
 def publish(title: str, url: str, catch_up: bool) -> str:
-    id = client.execute(gql("""
-mutation {
-  createVideoLink (data: {
-    title: "%s",
-    url: "%s",
-    liveFrom: "%s",
-    liveUntil:"%s",
-    catchUp:%s
-  }) {
-     id
-  }
-}
-""" % (title, 
-       url, 
-       datetime.datetime.now().astimezone().isoformat(), 
-       (datetime.datetime.now().astimezone() + datetime.timedelta(days=1)).isoformat(), 
-       "true" if catch_up else "false")))["createVideoLink"]["id"]
-
-    client.execute(gql("""
+    try:
+        id = client.execute(gql("""
     mutation {
-    publishVideoLink (where: {
-        id: "%s"
-    },to: PUBLISHED
-    ) {
-        stage
+    createVideoLink (data: {
+        title: "%s",
+        url: "%s",
+        liveFrom: "%s",
+        liveUntil:"%s",
+        catchUp:%s
+    }) {
+        id
     }
     }
-    """ % (id)))
+    """ % (title, 
+        url, 
+        datetime.datetime.now().astimezone().isoformat(), 
+        (datetime.datetime.now().astimezone() + datetime.timedelta(days=1)).isoformat(), 
+        "true" if catch_up else "false")))["createVideoLink"]["id"]
 
-    return id
+        client.execute(gql("""
+        mutation {
+        publishVideoLink (where: {
+            id: "%s"
+        },to: PUBLISHED
+        ) {
+            stage
+        }
+        }
+        """ % (id)))
+
+
+        return id
+
+    except Exception as err:
+        print(err)
+        return ""
 
 def delete(id: str):
     client.execute(gql("""

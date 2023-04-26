@@ -28,7 +28,7 @@ while True:
             "player_url": f"https://roses.ury.org.uk/stream/{row.iloc[0]}",
             "id": row.iloc[0],
             "live": row.iloc[3] != "Off Air",
-            "event": row.iloc[2] if row.iloc[3] == "Live" else "Coming Up: " + row.iloc[2]
+            "event": row.iloc[2] if row.iloc[3] != "Pending" else "Coming Up: " + row.iloc[2]
         }
     
     if previous_data == {}:
@@ -59,7 +59,7 @@ while True:
                 log_id = roseslive.request_log(k, datetime.datetime.fromisoformat(previous_data[k]["start_time"]), datetime.datetime.now(), v["event"])
                 
                 # upload it
-                roseslive.change_to_catchup(previous_data[k]["roseslive_id"], f"Catch Up: {v['event']}", f"https://roses.ury.org.uk/catchup/{log_id}") 
+                roseslive.change_to_catchup(previous_data[k]["roseslive_id"], f"Catch Up: {v['event']} Commentary", f"https://roses.ury.org.uk/catchup/{log_id}") 
 
                 continue
 
@@ -81,7 +81,7 @@ while True:
             log_id = roseslive.request_log(k, datetime.datetime.fromisoformat(previous_data[k]["start_time"]), datetime.datetime.now(), v["event"])
             
             # upload it
-            roseslive.change_to_catchup(previous_data[k]["roseslive_id"], f"Catch Up: {v['event']}", f"https://roses.ury.org.uk/catchup/{log_id}") 
+            roseslive.change_to_catchup(previous_data[k]["roseslive_id"], f"Catch Up: {v['event']} Commentary", f"https://roses.ury.org.uk/catchup/{log_id}") 
 
 
             # publish new stream

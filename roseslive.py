@@ -64,24 +64,29 @@ mutation {
 """ % (id)))
 
 def change_to_catchup(id: str, title: str, catchup_url: str):
-    client.execute(gql("""
-    mutation {
-  updateVideoLink(where: {
-    id: "%s"
-  }, data: {
-    title: "%s",
-    url: "%s",
-    catchUp: true
-  }) {
-    id
-  }
-}
-""" % (id, title, catchup_url)))
+    
+    delete(id)
+    publish(title, catchup_url, True)
+
+
+#     client.execute(gql("""
+#     mutation {
+#   updateVideoLink(where: {
+#     id: "%s"
+#   }, data: {
+#     title: "%s",
+#     url: "%s",
+#     catchUp: true
+#   }) {
+#     id
+#   }
+# }
+# """ % (id, title, catchup_url)))
 
 def request_log(stream_endpoint: str, start_time, end_time, name) -> str:
     return requests.post(config.LOG_REQUEST_URL, json = {
         "name": f"{name} - Full Commentary",
         "startTime": start_time.astimezone().isoformat(),
         "endTime": end_time.astimezone().isoformat(),
-        "stream": stream_endpoint
+        "stream": f"roses-out-{stream_endpoint}"
     }).text

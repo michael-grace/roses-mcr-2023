@@ -30,8 +30,8 @@ def publish(title: str, url: str, catch_up: bool) -> str:
     }
     """ % (title, 
         url, 
-        datetime.datetime.now().astimezone().isoformat(), 
-        (datetime.datetime.now().astimezone() + datetime.timedelta(days=1)).isoformat(), 
+        datetime.datetime.now().astimezone().isoformat() if not catch_up else (datetime.datetime.now().astimezone() + datetime.timedelta(days=-1)).isoformat(), 
+        (datetime.datetime.now().astimezone() + datetime.timedelta(days=1)).isoformat() if not catch_up else datetime.datetime.now().isoformat(), 
         "true" if catch_up else "false")))["createVideoLink"]["id"]
 
         client.execute(gql("""

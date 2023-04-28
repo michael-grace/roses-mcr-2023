@@ -59,7 +59,7 @@ while True:
                 log_id = roseslive.request_log(k, datetime.datetime.fromisoformat(previous_data[k]["start_time"]), datetime.datetime.now(), v["event"])
                 
                 # upload it
-                roseslive.change_to_catchup(previous_data[k]["roseslive_id"], f"Catch Up: {v['event']} Commentary", f"https://roses.ury.org.uk/catchup/{log_id}") 
+                roseslive.change_to_catchup(previous_data[k]["roseslive_id"], f"{v['event']} Commentary", f"https://roses.ury.org.uk/catchup/{log_id}") 
 
                 continue
 
@@ -81,7 +81,7 @@ while True:
             log_id = roseslive.request_log(k, datetime.datetime.fromisoformat(previous_data[k]["start_time"]), datetime.datetime.now(), v["event"])
             
             # upload it
-            roseslive.change_to_catchup(previous_data[k]["roseslive_id"], f"Catch Up: {v['event']} Commentary", f"https://roses.ury.org.uk/catchup/{log_id}") 
+            roseslive.change_to_catchup(previous_data[k]["roseslive_id"], f"{v['event']} Commentary", f"https://roses.ury.org.uk/catchup/{log_id}") 
 
 
             # publish new stream
